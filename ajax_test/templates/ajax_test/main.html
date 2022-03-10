@@ -1,0 +1,64 @@
+{%  extends 'ajax_test/base.html' %}
+
+{% block content %}
+
+    <p id="timeNow">{{ time_now }}</p>
+
+    <table class="table">
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>price</th>
+				<th>owner</th>
+			</tr>
+		</thead>
+
+		<tbody id="list">
+
+		</tbody>
+
+	</table>
+
+	<script>
+		function fetchdata(){
+			$.ajax({
+				url: window.location.pathname,
+				type: 'GET',
+				success: function(data){
+                    $('#timeNow').html(data.time_now);
+
+                    $('#list').empty();
+
+					var temp = '<tr>';
+
+					for (var i in data.table_headers){
+						temp += '<th>' + data.table_headers[i] + '</th>'; 
+                    }
+
+					$('#list').append(temp + '</tr>');
+
+					var table = data.table;
+
+                    for (var row in table){
+						temp = '<tr>'
+						for (var col in table[row]){
+							temp += '<td>' + table[row][col] + '</td>';
+						}
+						$('#list').append(temp + '</tr>');
+                        
+                    }
+				},
+				error: function(e){
+					console.log(e)
+				},
+			});
+		}
+
+
+		$(document).ready(function(){
+			setInterval(fetchdata, 5000);
+		});
+	</script>
+
+{% endblock %}
